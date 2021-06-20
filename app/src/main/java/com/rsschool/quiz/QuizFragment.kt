@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.rsschool.quiz.databinding.FragmentQuizBinding
 import java.lang.RuntimeException
@@ -37,14 +38,14 @@ class QuizFragment() : Fragment() {
         val countQuestion = arguments?.getInt(COUNT_QUESTION_KEY) ?: 0
 
         // получаем данные из активити
-        val question = listener?.onGetData()
+        val question = listener?.onGetQuestionData()
 
         //есть данные - применяем их к элемента интерфейса
         if (question != null) {
             // задаем текст вопроса
             binding.question.text = question.text
             // задаем варианты ответа и отмечаем ранне выбранный если он есть
-            configRadioGroup(numQuestion, countQuestion, question)
+            configRadioGroup(question)
             // настраиваем отображение кнопки Next
             configNextButton(numQuestion, countQuestion, question.selected)
             // настраиваем отображение кнопки Previous
@@ -54,7 +55,7 @@ class QuizFragment() : Fragment() {
         }
     }
 
-    private fun configRadioGroup(numQuestion: Int, countQuestion: Int, question: Question) {
+    private fun configRadioGroup(question: Question) {
         // задаем текст каждого из вариантов ответа
         binding.optionOne.text   = question.arrVariants[0]
         binding.optionTwo.text   = question.arrVariants[1]
@@ -111,7 +112,7 @@ class QuizFragment() : Fragment() {
 
     // настройка отображения кнопки Previous
     private fun configPrevButton(numQuestion: Int) {
-        binding.previousButton.isEnabled = numQuestion > 0
+        binding.previousButton.isVisible = numQuestion > 0
         binding.previousButton.setOnClickListener{ listener?.onPrevQuestion() }
     }
 
@@ -153,6 +154,5 @@ class QuizFragment() : Fragment() {
         }
         private const val NUM_QUESTION_KEY = "NUM_QUESTION"
         private const val COUNT_QUESTION_KEY = "COUNT_QUESTION"
-        private const val QUESTION_KEY = "QUESTION"
     }
 }
