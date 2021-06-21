@@ -2,11 +2,15 @@ package com.rsschool.quiz
 
 class Quiz {
     public val questions = listOf<Question>(
-        Question(1, -1,"Q1", arrayOf<String>("1","2","3","4","5") ),
-        Question(2, -1,"Q2", arrayOf<String>("1","2","3","4","5") ),
-        Question(3, -1,"Q3", arrayOf<String>("1","2","3","4","5") ),
-        Question(4, -1,"Q4", arrayOf<String>("1","2","3","4","5") ),
-        Question(0, -1,"Q5", arrayOf<String>("1","2","3","4","5") )
+        Question(1, -1,"Какая из приставок единиц измерения больше?",
+            arrayOf("тера","зетта","дека","пета","гига") ),
+        Question(2, -1,"Укажите первые 6 цифр десятичной части числа Пи.",
+            arrayOf("415196","151429","141592","761435","151492") ),
+        Question(3, -1,"Какая из мер длины меньше?",
+            arrayOf("Парсек","Ярд","Фут","Дюйм","Лига") ),
+        Question(4, -1,"Какой степени двойки соответствует число 65 536",
+            arrayOf("10","32","14","20","16") ),
+        Question(0, -1,"Найдите лишние число среди простых чисел.", arrayOf("0","1","2","3","101") )
     )
 
     fun getResultText(): String {
@@ -31,15 +35,4 @@ class Quiz {
     fun resetAnswer() {
         questions.forEach { it.selected = -1 }
     }
-    /*
-    public val questions = mutableListOf<Question>()
-
-    constructor() {
-        questions.add(Question(1, -1,"Q1", arrayOf<String>("1","2","3","4","5") ))
-        questions.add(Question(2, -1,"Q2", arrayOf<String>("1","2","3","4","5") ))
-        questions.add(Question(3, -1,"Q3", arrayOf<String>("1","2","3","4","5") ))
-        questions.add(Question(4, -1,"Q4", arrayOf<String>("1","2","3","4","5") ))
-        questions.add(Question(0, -1,"Q5", arrayOf<String>("1","2","3","4","5") ))
-    }
-    */
 }

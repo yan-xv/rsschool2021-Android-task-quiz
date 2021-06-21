@@ -11,12 +11,12 @@ import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 
-
+/*
 enum class Themes(@StyleRes val themeId: Int) {
     FIRST(R.style.Theme_Quiz_First),
     SECOND(R.style.Theme_Quiz_Second);
 }
-
+*/
 class MainActivity : AppCompatActivity() , IQuizFragment {
     private var numQuestion = 0
     private var countQuestion = 5
@@ -112,10 +112,10 @@ class MainActivity : AppCompatActivity() , IQuizFragment {
     private fun exit() {
         AlertDialog.Builder(this)
             .setIcon(android.R.drawable.ic_dialog_alert)
-            .setTitle("Closing Activity")
-            .setMessage("Are you sure you want to close this activity?")
-            .setPositiveButton("Yes") { _, _ -> finish() }
-            .setNegativeButton("No", null)
+            .setTitle("Закрыть квиз?")
+            .setMessage("Внимание! Результат не будет сохранён!")
+            .setPositiveButton("Да") { _, _ -> finish() }
+            .setNegativeButton("Нет", null)
             .show()
     }
 
@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() , IQuizFragment {
 
     private fun setupStatusBarColor() {
         val typedValue = TypedValue()
-        theme.resolveAttribute(R.attr.colorPrimaryDark, typedValue, true)
+        theme.resolveAttribute(R.attr.colorPrimaryVariant, typedValue, true)
         window.statusBarColor = typedValue.data
     }
 }

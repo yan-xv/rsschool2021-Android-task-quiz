@@ -88,24 +88,28 @@
 
                 <RadioButton
                     android:id="@+id/option_one"
+                    android:textSize="16sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="Option 1" />
 
                 <RadioButton
                     android:id="@+id/option_two"
+                    android:textSize="16sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="Option 2" />
 
                 <RadioButton
                     android:id="@+id/option_three"
+                    android:textSize="16sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="Option 3" />
 
                 <RadioButton
                     android:id="@+id/option_four"
+                    android:textSize="16sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:checked="true"
@@ -113,6 +117,7 @@
 
                 <RadioButton
                     android:id="@+id/option_five"
+                    android:textSize="16sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="Option 5" />
@@ -126,7 +131,7 @@
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Previous"
+        android:text="@string/prev_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
