@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Квиз</string>
+    <string name="question_num">Вопрос №</string>
     <string name="next_button">Вперед</string>
     <string name="prev_button">Назад</string>
-    <string name="submit_button">Завершить</string>
+    <string name="submit_button">Готово</string>
+    <string name="share_button">Отправить</string>
+    <string name="back_button">Повторить</string>
+    <string name="exit_button">Закрыть</string>
 </resources>

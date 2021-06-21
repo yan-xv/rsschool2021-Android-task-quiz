@@ -6,23 +6,25 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.rsschool.quiz.databinding.FragmentQuizBinding
+import androidx.core.os.bundleOf
 import com.rsschool.quiz.databinding.FragmentResultBinding
 import java.lang.RuntimeException
 
+interface IResultFragment {
+    fun onReset()
+    fun onShare()
+    fun onExit()
+}
+
 class ResultFragment : Fragment() {
-    private var listener: IQuizFragment? = null
+    private var listener: IResultFragment? = null
     private var _binding: FragmentResultBinding? = null
     private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentResultBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -36,14 +38,13 @@ class ResultFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // получаем данные из активити
-        val quiz = listener?.onGetQuizData()
-        //есть данные - применяем их к элемента интерфейса
-        if (quiz != null) {
-            binding.resultText.text = quiz.getResultText()
-            binding.backButton.setOnClickListener { listener?.onReset() }
-            binding.exitButton.setOnClickListener { listener?.onExit() }
-            binding.shareButton.setOnClickListener { listener?.onShare() }
-        }
+        val quiz = arguments?.get(QUIZ_KEY) as Quiz
+        // применяем их к элемента интерфейса
+        binding.resultText.text = quiz.getResultText()
+        binding.backButton.setOnClickListener { listener?.onReset() }
+        binding.exitButton.setOnClickListener { listener?.onExit() }
+        binding.shareButton.setOnClickListener { listener?.onShare() }
+
     }
 
     override fun onDetach() {
@@ -53,7 +54,7 @@ class ResultFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is IQuizFragment) {
+        if (context is IResultFragment) {
             listener = context
         } else {
             throw RuntimeException(
@@ -65,6 +66,12 @@ class ResultFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = ResultFragment()
+        fun newInstance(quiz: Quiz): ResultFragment {
+            val fragment = ResultFragment()
+            fragment.arguments = bundleOf(QUIZ_KEY to quiz)
+            return fragment
+        }
+
+        private const val QUIZ_KEY = "QUIZ"
     }
 }

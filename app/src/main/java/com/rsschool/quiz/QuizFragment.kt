@@ -5,12 +5,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.rsschool.quiz.databinding.FragmentQuizBinding
 import java.lang.RuntimeException
 
-class QuizFragment() : Fragment() {
+interface IQuizFragment {
+    fun onNextQuestion()
+    fun onPrevQuestion()
+    fun onSubmitResult()
+}
+
+class QuizFragment : Fragment() {
     private var listener: IQuizFragment? = null
     private var _binding: FragmentQuizBinding? = null
     private val binding get() = _binding!!
@@ -19,7 +26,7 @@ class QuizFragment() : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentQuizBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -35,23 +42,20 @@ class QuizFragment() : Fragment() {
         // получим номер текущего вопроса и общего кол-ва вопросов
         val numQuestion = arguments?.getInt(NUM_QUESTION_KEY) ?: 0
         val countQuestion = arguments?.getInt(COUNT_QUESTION_KEY) ?: 0
+        // получаем данные
+        val question = arguments?.get(DATA_QUESTION_KEY) as Question
 
-        // получаем данные из активити
-        val question = listener?.onGetQuestionData()
-
-        //есть данные - применяем их к элемента интерфейса
-        if (question != null) {
-            // задаем текст вопроса
-            binding.question.text = question.text
-            // задаем варианты ответа и отмечаем ранне выбранный если он есть
-            configRadioGroup(question)
-            // настраиваем отображение кнопки Next
-            configNextButton(numQuestion, countQuestion, question.selected)
-            // настраиваем отображение кнопки Previous
-            configPrevButton(numQuestion)
-            // настраиваем отображение тулбара
-            configToolbar(numQuestion)
-        }
+        //применяем их к элемента интерфейса
+        // задаем текст вопроса
+        binding.question.text = question.text
+        // задаем варианты ответа и отмечаем ранне выбранный если он есть
+        configRadioGroup(question)
+        // настраиваем отображение кнопки Next
+        configNextButton(numQuestion, countQuestion, question.selected)
+        // настраиваем отображение кнопки Previous
+        configPrevButton(numQuestion)
+        // настраиваем отображение тулбара
+        configToolbar(numQuestion)
     }
 
     private fun configRadioGroup(question: Question) {
@@ -117,7 +121,7 @@ class QuizFragment() : Fragment() {
 
     // настройка отображения тулбара
     private fun configToolbar(numQuestion: Int) {
-        binding.toolbar.title = "Question ${numQuestion + 1}"
+        binding.toolbar.title = getString(R.string.question_num) + "${numQuestion + 1}"
         if ( numQuestion == 0 )
             binding.toolbar.navigationIcon = null
         else
@@ -143,15 +147,16 @@ class QuizFragment() : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(numQuestion: Int, countQuestion: Int): QuizFragment {
+        fun newInstance(numQuestion: Int, countQuestion: Int, question: Question): QuizFragment {
             val fragment = QuizFragment()
-            val args = Bundle()
-            args.putInt(NUM_QUESTION_KEY, numQuestion)
-            args.putInt(COUNT_QUESTION_KEY, countQuestion)
-            fragment.arguments = args
+            fragment.arguments = bundleOf(
+                COUNT_QUESTION_KEY to countQuestion,
+                NUM_QUESTION_KEY to numQuestion,
+                DATA_QUESTION_KEY to question)
             return fragment
         }
         private const val NUM_QUESTION_KEY = "NUM_QUESTION"
         private const val COUNT_QUESTION_KEY = "COUNT_QUESTION"
+        private const val DATA_QUESTION_KEY = "DATA_QUESTION"
     }
 }

@@ -1,7 +1,10 @@
 package com.rsschool.quiz
 
-class Quiz {
-    public val questions = listOf<Question>(
+import android.os.Parcel
+import android.os.Parcelable
+
+class Quiz() : Parcelable {
+    val questions = listOf(
         Question(1, -1,"Какая из приставок единиц измерения больше?",
             arrayOf("тера","зетта","дека","пета","гига") ),
         Question(2, -1,"Укажите первые 6 цифр десятичной части числа Пи.",
@@ -13,6 +16,8 @@ class Quiz {
         Question(0, -1,"Найдите лишние число среди простых чисел.", arrayOf("0","1","2","3","101") )
     )
 
+    constructor(parcel: Parcel) : this()
+
     fun getResultText(): String {
         return "Отвечено верно на ${getCountTrueAnswer()} из ${getCountQuestions()} вопросов"
     }
@@ -20,7 +25,7 @@ class Quiz {
     fun getResultTextForEmail(): String {
         var text = getResultText() + "\n\n"
         questions.forEachIndexed {
-                i,it->text += "$i) ${it.text} \nВаш ответ: ${it.arrVariants[it.selected]}\n\n" }
+                i,it->text += "$i+1) ${it.text} \nВаш ответ: ${it.arrVariants[it.selected]}\n\n" }
         return text
     }
 
@@ -34,5 +39,23 @@ class Quiz {
 
     fun resetAnswer() {
         questions.forEach { it.selected = -1 }
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Quiz> {
+        override fun createFromParcel(parcel: Parcel): Quiz {
+            return Quiz(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Quiz?> {
+            return arrayOfNulls(size)
+        }
     }
 }

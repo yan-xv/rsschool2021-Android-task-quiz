@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".QuizFragment">
-    <!--android:theme="@style/Theme.Quiz.Second"-->
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -22,7 +21,7 @@
             android:fitsSystemWindows="true"
             app:navigationContentDescription="Back to the previous question"
             app:navigationIcon="@drawable/ic_baseline_chevron_left_24"
-            app:title="Question 1" />
+            app:title="@string/question_num" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

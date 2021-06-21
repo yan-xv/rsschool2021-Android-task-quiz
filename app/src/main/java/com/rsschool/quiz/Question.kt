@@ -1,9 +1,21 @@
 package com.rsschool.quiz
 
-data class Question(val trueVariant: Int = -1,
-                    var selected: Int = -1,
-                    val text:String = "question",
-                    val arrVariants: Array<String> = arrayOf<String>("1","2","3","4","5") ) {
+import android.os.Parcel
+import android.os.Parcelable
+
+data class Question(
+    val trueVariant: Int = -1,
+    var selected: Int = -1,
+    val text: String? = "question",
+    val arrVariants: Array<String> = arrayOf("1","2","3","4","5") ) :
+    Parcelable {
+
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.createStringArray() as Array<String>
+    )
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -26,12 +38,26 @@ data class Question(val trueVariant: Int = -1,
         result = 31 * result + arrVariants.contentHashCode()
         return result
     }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(trueVariant)
+        parcel.writeInt(selected)
+        parcel.writeString(text)
+        parcel.writeStringArray(arrVariants)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Question> {
+        override fun createFromParcel(parcel: Parcel): Question {
+            return Question(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Question?> {
+            return arrayOfNulls(size)
+        }
+    }
 }
-/*
-class Question(vquestion: String, variantAnswer: Array<String>, trueAnswer: Int) {
-    private val trueAnswer: Int = -1
-    private var userAnswer: Int = -1
-    private val question = "question"
-    private val variantAnswer = arrayOf<String>("1","2","3","4","5")
-}
-*/
+
