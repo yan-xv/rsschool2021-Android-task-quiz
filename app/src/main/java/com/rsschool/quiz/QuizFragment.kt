@@ -45,6 +45,12 @@ class QuizFragment : Fragment() {
         // получаем данные
         val question = arguments?.get(DATA_QUESTION_KEY) as Question
 
+        val listFrameLayouts = listOf(
+            binding.frameLayout1, binding.frameLayout2, binding.frameLayout3, binding.frameLayout4, binding.frameLayout5)
+
+        listFrameLayouts[numQuestion].elevation = binding.linearLayout.elevation
+        listFrameLayouts[numQuestion].foreground = null
+
         //применяем их к элемента интерфейса
         // задаем текст вопроса
         binding.question.text = question.text

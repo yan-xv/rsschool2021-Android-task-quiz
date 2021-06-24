@@ -2,6 +2,7 @@ package com.rsschool.quiz
 
 import android.content.Context
 import android.os.Bundle
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,11 @@ class ResultFragment : Fragment() {
         binding.exitButton.setOnClickListener { listener?.onExit() }
         binding.shareButton.setOnClickListener { listener?.onShare() }
 
+        val listStars = listOf(
+            binding.star1, binding.star2, binding.star3, binding.star4, binding.star5)
+
+        for ( i in 0 until quiz.getCountTrueAnswer())
+            listStars[i].setImageResource(android.R.drawable.btn_star_big_on)
     }
 
     override fun onDetach() {

@@ -29,7 +29,7 @@ class Quiz() : Parcelable {
         return text
     }
 
-    private fun getCountTrueAnswer(): Int {
+    fun getCountTrueAnswer(): Int {
         return questions.filter { it.trueVariant == it.selected }.size
     }
 
