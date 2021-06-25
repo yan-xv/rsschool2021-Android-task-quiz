@@ -10,12 +10,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 
-/*
-enum class Themes(@StyleRes val themeId: Int) {
-    FIRST(R.style.Theme_Quiz_First),
-    SECOND(R.style.Theme_Quiz_Second);
-}
-*/
 class MainActivity : AppCompatActivity() , IQuizFragment, IResultFragment {
     private var numQuestion = 0
     private var countQuestion = 5

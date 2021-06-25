@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -43,21 +44,24 @@ class QuizFragment : Fragment() {
         val numQuestion = arguments?.getInt(NUM_QUESTION_KEY) ?: 0
         val countQuestion = arguments?.getInt(COUNT_QUESTION_KEY) ?: 0
         // получаем данные
-        val question = arguments?.get(DATA_QUESTION_KEY) as Question
+        val dataQuestion = arguments?.get(DATA_QUESTION_KEY) as Question
 
-        val listFrameLayouts = listOf(
-            binding.frameLayout1, binding.frameLayout2, binding.frameLayout3, binding.frameLayout4, binding.frameLayout5)
+        binding.apply {
+            // листаем вкладки "прогресс-бара"
+            val listFrameLayouts = listOf(frameLayout1, frameLayout2, frameLayout3, frameLayout4, frameLayout5)
+            listFrameLayouts[numQuestion].apply {
+                elevation = linearLayout.elevation
+                foreground = null
+            }
 
-        listFrameLayouts[numQuestion].elevation = binding.linearLayout.elevation
-        listFrameLayouts[numQuestion].foreground = null
-
-        //применяем их к элемента интерфейса
-        // задаем текст вопроса
-        binding.question.text = question.text
+            //применяем данные к элемента интерфейса
+            // задаем текст вопроса
+            question.text = dataQuestion.text
+        }
         // задаем варианты ответа и отмечаем ранне выбранный если он есть
-        configRadioGroup(question)
+        configRadioGroup(dataQuestion)
         // настраиваем отображение кнопки Next
-        configNextButton(numQuestion, countQuestion, question.selected)
+        configNextButton(numQuestion, countQuestion, dataQuestion.selected)
         // настраиваем отображение кнопки Previous
         configPrevButton(numQuestion)
         // настраиваем отображение тулбара
@@ -65,73 +69,61 @@ class QuizFragment : Fragment() {
     }
 
     private fun configRadioGroup(question: Question) {
-        // задаем текст каждого из вариантов ответа
-        binding.optionOne.text   = question.arrVariants[0]
-        binding.optionTwo.text   = question.arrVariants[1]
-        binding.optionThree.text = question.arrVariants[2]
-        binding.optionFour.text  = question.arrVariants[3]
-        binding.optionFive.text  = question.arrVariants[4]
-
-        // отмечаем ранее выбранный вариант ответа
-        binding.radioGroup.check(convertAnswerToIdOption(question.selected))
-
-        // задаем действия на событие выбора варианта ответа
-        binding.radioGroup.setOnCheckedChangeListener {
-            // если выбран вариант ответа, то активируем кнопку Next
-            _, i -> binding.nextButton.isEnabled = true
-            // передадим в данные индекс выбранного варианта ответа
-            question.selected = convertIdOptionToAnswer(i)
+        binding.apply {
+            val listOption = listOf(optionOne, optionTwo, optionThree, optionFour, optionFive)
+            // задаем текст каждого из вариантов ответа
+            listOption.forEachIndexed {i, option-> option.text = question.arrVariants[i]  }
+            // отмечаем ранее выбранный вариант ответа
+            if ( question.selected > -1 )
+            listOption[question.selected].isChecked = true
+            // задаем действия на событие выбора варианта ответа
+            radioGroup.setOnCheckedChangeListener {
+                // если выбран вариант ответа, то активируем кнопку Next
+                    _, i -> nextButton.isEnabled = true
+                // передадим в данные индекс выбранного варианта ответа
+                question.selected = listOption.convertIdOptionToAnswer(i)
+            }
         }
     }
 
     // по id контрала radioGroup получаем соотвествуюший индекс варианта ответа
-    private fun convertIdOptionToAnswer(id: Int): Int {
-        return when (id){
-            binding.optionOne.id->0
-            binding.optionTwo.id->1
-            binding.optionThree.id->2
-            binding.optionFour.id->3
-            binding.optionFive.id->4
-            else->-1
-        }
+    private fun List<RadioButton>.convertIdOptionToAnswer(id: Int): Int {
+        for ((i, option) in this.withIndex())
+            if (option.id == id)
+                return i
+        return -1
     }
 
-    // по индексу варианта ответа получаем id контрала radioGroup
-    private fun convertAnswerToIdOption(answer: Int): Int {
-        return when (answer){
-            0->binding.optionOne.id
-            1->binding.optionTwo.id
-            2->binding.optionThree.id
-            3->binding.optionFour.id
-            4->binding.optionFive.id
-            else->0
-        }
-    }
 
     // настройка отображения кнопки Next
     private fun configNextButton(numQuestion: Int, countQuestion: Int, selectAnswer: Int) {
-        binding.nextButton.isEnabled = selectAnswer in 0 .. countQuestion
-        if ( numQuestion + 1 == countQuestion ) {
-            binding.nextButton.text =  getString(R.string.submit_button)
-            binding.nextButton.setOnClickListener { listener?.onSubmitResult() }
+        binding.nextButton.apply {
+            isEnabled = selectAnswer in 0..countQuestion
+            if (numQuestion + 1 == countQuestion) {
+                text = getString(R.string.submit_button)
+                setOnClickListener { listener?.onSubmitResult() }
+            } else
+                setOnClickListener { listener?.onNextQuestion() }
         }
-        else
-            binding.nextButton.setOnClickListener { listener?.onNextQuestion() }
     }
 
     // настройка отображения кнопки Previous
     private fun configPrevButton(numQuestion: Int) {
-        binding.previousButton.isVisible = numQuestion > 0
-        binding.previousButton.setOnClickListener{ listener?.onPrevQuestion() }
+        binding.previousButton.apply {
+            isVisible = numQuestion > 0
+            setOnClickListener { listener?.onPrevQuestion() }
+        }
     }
 
     // настройка отображения тулбара
     private fun configToolbar(numQuestion: Int) {
-        binding.toolbar.title = getString(R.string.question_num) + "${numQuestion + 1}"
-        if ( numQuestion == 0 )
-            binding.toolbar.navigationIcon = null
-        else
-            binding.toolbar.setNavigationOnClickListener { listener?.onPrevQuestion() }
+        binding.toolbar.apply {
+            title = getString(R.string.question_num) + "${numQuestion + 1}"
+            if (numQuestion == 0)
+                navigationIcon = null
+            else
+                setNavigationOnClickListener { listener?.onPrevQuestion() }
+        }
     }
 
     override fun onDetach() {

@@ -41,16 +41,16 @@ class ResultFragment : Fragment() {
         // получаем данные из активити
         val quiz = arguments?.get(QUIZ_KEY) as Quiz
         // применяем их к элемента интерфейса
-        binding.resultText.text = quiz.getResultText()
-        binding.backButton.setOnClickListener { listener?.onReset() }
-        binding.exitButton.setOnClickListener { listener?.onExit() }
-        binding.shareButton.setOnClickListener { listener?.onShare() }
+        binding.apply {
+            resultText.text = quiz.getResultText()
+            backButton.setOnClickListener { listener?.onReset() }
+            exitButton.setOnClickListener { listener?.onExit() }
+            shareButton.setOnClickListener { listener?.onShare() }
 
-        val listStars = listOf(
-            binding.star1, binding.star2, binding.star3, binding.star4, binding.star5)
-
-        for ( i in 0 until quiz.getCountTrueAnswer())
-            listStars[i].setImageResource(android.R.drawable.btn_star_big_on)
+            val listStars = listOf(star1, star2, star3, star4, star5)
+            for (i in 0 until quiz.getCountTrueAnswer())
+                listStars[i].setImageResource(android.R.drawable.btn_star_big_on)
+        }
     }
 
     override fun onDetach() {
