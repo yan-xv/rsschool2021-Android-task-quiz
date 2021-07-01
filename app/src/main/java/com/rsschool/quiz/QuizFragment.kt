@@ -7,16 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.rsschool.quiz.databinding.FragmentQuizBinding
 import java.lang.RuntimeException
-
-interface IQuizFragment {
-    fun onNextQuestion()
-    fun onPrevQuestion()
-    fun onSubmitResult()
-}
 
 class QuizFragment : Fragment() {
     private var listener: IQuizFragment? = null
@@ -29,6 +22,7 @@ class QuizFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentQuizBinding.inflate(inflater, container, false)
+        initView()
         return binding.root
     }
 
@@ -37,49 +31,49 @@ class QuizFragment : Fragment() {
         _binding = null
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    private fun initView (){
         // получим номер текущего вопроса и общего кол-ва вопросов
         val numQuestion = arguments?.getInt(NUM_QUESTION_KEY) ?: 0
         val countQuestion = arguments?.getInt(COUNT_QUESTION_KEY) ?: 0
-        // получаем данные
+        // получаем данные по вопросу
         val dataQuestion = arguments?.get(DATA_QUESTION_KEY) as Question
-
-        binding.apply {
-            // листаем вкладки "прогресс-бара"
-            val listFrameLayouts = listOf(frameLayout1, frameLayout2, frameLayout3, frameLayout4, frameLayout5)
-            listFrameLayouts[numQuestion].apply {
-                elevation = linearLayout.elevation
-                foreground = null
-            }
-
-            //применяем данные к элемента интерфейса
-            // задаем текст вопроса
-            question.text = dataQuestion.text
-        }
+        // применяем данные к элементам UI
+        // задаем текст вопроса
+        binding.question.text = dataQuestion.text
+        // листаем вкладки "прогресс-бара"
+        initTabbar(numQuestion)
         // задаем варианты ответа и отмечаем ранне выбранный если он есть
-        configRadioGroup(dataQuestion)
+        initRadioGroup(dataQuestion)
         // настраиваем отображение кнопки Next
-        configNextButton(numQuestion, countQuestion, dataQuestion.selected)
+        initNextButton(numQuestion, countQuestion, dataQuestion.selected)
         // настраиваем отображение кнопки Previous
-        configPrevButton(numQuestion)
+        initPrevButton(numQuestion)
         // настраиваем отображение тулбара
-        configToolbar(numQuestion)
+        initToolbar(numQuestion)
     }
 
-    private fun configRadioGroup(question: Question) {
-        binding.apply {
+    private fun initTabbar(numQuestion: Int) {
+        with(binding)  {
+            val listFrameLayouts = listOf(tab1, tab2, tab3, tab4, tab5)
+            with(listFrameLayouts[numQuestion]) {
+                elevation = tabbar.elevation  // поднимаем вкладку
+                foreground = null             // убираем тень
+            }
+        }
+    }
+
+    private fun initRadioGroup(question: Question) {
+        with(binding)  {
             val listOption = listOf(optionOne, optionTwo, optionThree, optionFour, optionFive)
             // задаем текст каждого из вариантов ответа
-            listOption.forEachIndexed {i, option-> option.text = question.arrVariants[i]  }
+            listOption.forEachIndexed { i, option-> option.text = question.arrVariants[i] }
             // отмечаем ранее выбранный вариант ответа
             if ( question.selected > -1 )
-            listOption[question.selected].isChecked = true
+                listOption[question.selected].isChecked = true
             // задаем действия на событие выбора варианта ответа
-            radioGroup.setOnCheckedChangeListener {
+            radioGroup.setOnCheckedChangeListener { _, i ->
                 // если выбран вариант ответа, то активируем кнопку Next
-                    _, i -> nextButton.isEnabled = true
+                nextButton.isEnabled = true
                 // передадим в данные индекс выбранного варианта ответа
                 question.selected = listOption.convertIdOptionToAnswer(i)
             }
@@ -94,11 +88,10 @@ class QuizFragment : Fragment() {
         return -1
     }
 
-
     // настройка отображения кнопки Next
-    private fun configNextButton(numQuestion: Int, countQuestion: Int, selectAnswer: Int) {
-        binding.nextButton.apply {
-            isEnabled = selectAnswer in 0..countQuestion
+    private fun initNextButton(numQuestion: Int, countQuestion: Int, selectAnswer: Int) {
+        with(binding.nextButton) {
+            isEnabled = selectAnswer in 0 until countQuestion
             if (numQuestion + 1 == countQuestion) {
                 text = getString(R.string.submit_button)
                 setOnClickListener { listener?.onSubmitResult() }
@@ -108,16 +101,16 @@ class QuizFragment : Fragment() {
     }
 
     // настройка отображения кнопки Previous
-    private fun configPrevButton(numQuestion: Int) {
-        binding.previousButton.apply {
-            isVisible = numQuestion > 0
+    private fun initPrevButton(numQuestion: Int) {
+        with(binding.previousButton) {
+            binding.previousButton.isEnabled = numQuestion > 0
             setOnClickListener { listener?.onPrevQuestion() }
         }
     }
 
     // настройка отображения тулбара
-    private fun configToolbar(numQuestion: Int) {
-        binding.toolbar.apply {
+    private fun initToolbar(numQuestion: Int) {
+        with(binding.toolbar) {
             title = getString(R.string.question_num) + "${numQuestion + 1}"
             if (numQuestion == 0)
                 navigationIcon = null
@@ -133,25 +126,26 @@ class QuizFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is IQuizFragment) {
+        if (context is IQuizFragment)
             listener = context
-        } else {
-            throw RuntimeException(
-                context.toString()
-                        + " must implement IQuizFragment"
-            )
-        }
+        else
+            throw RuntimeException("$context must implement IQuizFragment")
+    }
+
+    interface IQuizFragment {
+        fun onNextQuestion()
+        fun onPrevQuestion()
+        fun onSubmitResult()
     }
 
     companion object {
         @JvmStatic
         fun newInstance(numQuestion: Int, countQuestion: Int, question: Question): QuizFragment {
-            val fragment = QuizFragment()
-            fragment.arguments = bundleOf(
+            return QuizFragment().apply { arguments = bundleOf(
                 COUNT_QUESTION_KEY to countQuestion,
                 NUM_QUESTION_KEY to numQuestion,
                 DATA_QUESTION_KEY to question)
-            return fragment
+            }
         }
         private const val NUM_QUESTION_KEY = "NUM_QUESTION"
         private const val COUNT_QUESTION_KEY = "COUNT_QUESTION"

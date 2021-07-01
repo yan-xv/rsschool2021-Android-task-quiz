@@ -26,56 +26,57 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/tabbar"
         android:layout_width="match_parent"
         android:layout_height="15dp"
         android:elevation="4dp"
         android:orientation="horizontal"
+        android:baselineAligned="false"
         app:layout_constraintTop_toBottomOf="@id/appBarLayout">
 
         <FrameLayout
-            android:id="@+id/frameLayout1"
+            android:id="@+id/tab1"
             android:layout_width="wrap_content"
             android:layout_height="7dp"
             android:layout_weight="1"
-            android:foreground="@drawable/progress_bg_white"
-            android:background="@drawable/progress_bar_deep_orange"
+            android:foreground="@drawable/tabbar_shadow"
+            android:background="@drawable/tabbar_deep_orange"
             android:elevation="4dp"></FrameLayout>
 
         <FrameLayout
-            android:id="@+id/frameLayout2"
+            android:id="@+id/tab2"
             android:layout_width="wrap_content"
             android:layout_height="7dp"
             android:layout_weight="1"
-            android:foreground="@drawable/progress_bg_white"
-            android:background="@drawable/progress_bar_yellow"
+            android:foreground="@drawable/tabbar_shadow"
+            android:background="@drawable/tabbar_yellow"
             android:elevation="0dp"></FrameLayout>
 
         <FrameLayout
-            android:id="@+id/frameLayout3"
+            android:id="@+id/tab3"
             android:layout_width="wrap_content"
             android:layout_height="7dp"
             android:layout_weight="1"
-            android:foreground="@drawable/progress_bg_white"
-            android:background="@drawable/progress_bar_light_green"
+            android:foreground="@drawable/tabbar_shadow"
+            android:background="@drawable/tabbar_light_green"
             android:elevation="0dp">        </FrameLayout>
 
         <FrameLayout
-            android:id="@+id/frameLayout4"
+            android:id="@+id/tab4"
             android:layout_width="wrap_content"
             android:layout_height="7dp"
             android:layout_weight="1"
-            android:foreground="@drawable/progress_bg_white"
-            android:background="@drawable/progress_bar_cyan"
+            android:foreground="@drawable/tabbar_shadow"
+            android:background="@drawable/tabbar_cyan"
             android:elevation="0dp"></FrameLayout>
 
         <FrameLayout
-            android:id="@+id/frameLayout5"
+            android:id="@+id/tab5"
             android:layout_width="wrap_content"
             android:layout_height="7dp"
             android:layout_weight="1"
-            android:foreground="@drawable/progress_bg_white"
-            android:background="@drawable/progress_bar_deep_purple"
+            android:foreground="@drawable/tabbar_shadow"
+            android:background="@drawable/tabbar_deep_purple"
             android:elevation="0dp"></FrameLayout>
 
     </LinearLayout>
@@ -87,7 +88,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+        app:layout_constraintTop_toBottomOf="@+id/tabbar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

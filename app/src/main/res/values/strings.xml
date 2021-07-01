@@ -1,10 +1,13 @@
 <resources>
-    <string name="app_name">Квиз</string>
-    <string name="question_num">Вопрос №</string>
-    <string name="next_button">Вперед</string>
-    <string name="prev_button">Назад</string>
-    <string name="submit_button">Готово</string>
-    <string name="share_button">Отправить</string>
-    <string name="back_button">Повторить</string>
-    <string name="exit_button">Закрыть</string>
+    <string name="app_name">Quiz</string>
+    <string name="question_num">Question №</string>
+    <string name="next_button">Next</string>
+    <string name="prev_button">Previous</string>
+    <string name="submit_button">Submit</string>
+    <string name="share_button">Send</string>
+    <string name="back_button">Repeat</string>
+    <string name="exit_button">Exit</string>
+    <string name="subject">Quiz results</string>
+    <string name="result_template">Your result: %d %%</string>>
+    <string name="answer_template">Your answer: %s</string>
 </resources>
